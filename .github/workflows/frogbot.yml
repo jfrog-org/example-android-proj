@@ -23,7 +23,6 @@ jobs:
         run: |
           echo "run_pr=false" >> $GITHUB_OUTPUT
           echo "run_schedule=false" >> $GITHUB_OUTPUT
-
           if [[ "${{ github.event_name }}" == "pull_request_target" ]]; then
             echo "run_pr=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == "schedule" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
