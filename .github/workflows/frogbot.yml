@@ -13,26 +13,8 @@ permissions:
   security-events: write
 
 jobs:
-  detect-mode:
-    runs-on: ubuntu-latest
-    outputs:
-      run-pr-scan: ${{ steps.set.outputs.run_pr }}
-      run-schedule-scan: ${{ steps.set.outputs.run_schedule }}
-    steps:
-      - id: set
-        run: |
-          echo "run_pr=false" >> $GITHUB_OUTPUT
-          echo "run_schedule=false" >> $GITHUB_OUTPUT
-
-          if [[ "${{ github.event_name }}" == "pull_request_target" ]]; then
-            echo "run_pr=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.event_name }}" == "schedule" || "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "run_schedule=true" >> $GITHUB_OUTPUT
-          fi
-
   scan-pull-request:
-    needs: detect-mode
-    if: needs.detect-mode.outputs.run-pr-scan == 'true'
+    if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     environment: frogbot
     steps:
@@ -43,8 +25,7 @@ jobs:
           JF_GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   scan-repository:
-    needs: detect-mode
-    if: needs.detect-mode.outputs.run-schedule-scan == 'true'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       matrix:
