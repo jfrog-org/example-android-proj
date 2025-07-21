@@ -16,7 +16,7 @@ jobs:
   scan-pull-request:
     if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
-steps:
+    steps:
       - uses: jfrog/frogbot@v2
         env:
           JF_URL: ${{ secrets.JF_URL }}
